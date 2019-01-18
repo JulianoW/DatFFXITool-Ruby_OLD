@@ -51,6 +51,27 @@ class Armor < BinData::Record
   string :description, :length => lambda {0x280 - 28 - string_5_offset - item_offset} 
 
   # still need to do the graphic portion
+  uint32 :graphic_size
+  uint8  :graphic_flag  #should be 0x91 0xa1 or 0xb1
+  string :graphic_category, :length => 8  #need to right trim spaces
+  string :graphic_id, :length => 8
+  uint32 :graphic_buffer #idk, always equals 40
+  int32 :graphic_width
+  int32 :graphic_height
+  uint16 :graphic_planes
+  uint16 :graphic_bitcount
+  uint32 :graphic_compression
+  uint32 :graphic_image_size
+  uint32 :graphic_h_res
+  uint32 :graphic_v_res
+  uint32 :graphic_used_colors
+  uint32 :graphic_important_colors
+# palette[] created from 256 uint32's -- r g b a --- ACTUALLY, it's B G R A, thanks SE!
+# careful.. b g r a assumes 4x uint8's. uint32 would give arbg (i think?)
+# bitfields[] created from width*height (1024) bytes - read bytes one at a time?
+
+# then create png using palette[bitfields[i]] 
+# see below for manual work on this
 end
 
 # rotate function, move to a different file for dealing w/ encryption
@@ -58,6 +79,41 @@ class Integer
   def rotate(n)
     (self >> n | self << (8 - n) ) % 256
   end
+    def red()
+      (self & 0xff000000) >> 24
+    end
+
+    def green()
+      (self & 0x00ff0000) >> 16
+    end
+
+    def blue()
+      (self & 0x0000ff00) >> 8
+    end
+
+    def alpha()
+      self & 0x000000ff
+    end
+
+
+    def semialpha()
+      alpha = 255
+      semialpha = self & 0x000000ff
+      if (semialpha < 0x80) then
+        alpha = 2 * semialpha
+      end
+      alpha
+    end
+  
+    def rgba_hash()
+      {"red" => self.red, "green" => self.green, "blue" => self.blue, "alpha" => self.alpha, "semialpha" => self.semialpha}
+    end
+
+    def bgra()
+      bgra = []
+      bgra << self.blue << self.green << self.red << self.semialpha
+      bgra
+    end
 end
 
 # test using a file
@@ -89,4 +145,32 @@ puts armor[10]
 
 
 
+#convert this stuff to bindata format ;)
+
+palette = []
+remaining.each do |x|
+palette << x.rgba_hash
+end
+
+remaining = a[701...1725].pack("C*").unpack("N*")
+pixels = a[1725...1725+1024]
+out = ChunkyPNG::Image.new(32,32,ChunkyPNG::Color::TRANSPARENT)
+
+
+pixels.each_with_index do |pixel,i|
+x = (i % 32)
+y = 32 - 1 - ((i - x) / 32)
+#color = remaining[pixel]
+out[x,y] = ChunkyPNG::Color.rgba(palette[pixel]["blue"],palette[pixel]["green"],palette[pixel]["red"],palette[pixel]["semialpha"])
+end
+out.save 'wat.png'
+
+out.to_data_url.gsub("data:image/png;base64,","")  #base64
+# dont do the gsub and we can then do
+# ChunkyPNG::Image.from_data_url(out.to_data_url)
+# to load images
+
+
+out.palette #<-- sweet! 
+Array(out.palette).index(out.pixels[120]) #for re-building the binary...
 
