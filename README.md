@@ -5,17 +5,17 @@ To Do List:
 
 1. Create a separate file for Encryption/Decoding
 
-- Move Integer rotate() method
-- Rename to ror, create a rol
+- Move Integer rotate() method - DONE
+- Rename to ror, create a rol - DONE
 - Need to create something to translate special characters (auto-trans brackets, element icons, probably more...)
 
 2. Possible additions to BinData
 
 - ??? (May need some changes/additions to string? see #7)
 
-3. Complete Graphics portion for armor prototype
+3. Complete Graphics portion for armor prototype - DONE
 
-- Need to finish researching DAT format to extract the graphic portion of items
+- Need to finish researching DAT format to extract the graphic portion of items - DONE
 
 4. Refactor BinData::Records for reusability and DRYness, with other item types in mind
 - Header, Graphic portions should be reusable
