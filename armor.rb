@@ -1,4 +1,5 @@
 require_relative 'bindata.rb'
+require 'chunky_png'
 
 class Armor < BinData::Record
   # header: 14
@@ -66,20 +67,18 @@ class Armor < BinData::Record
   uint32 :graphic_v_res
   uint32 :graphic_used_colors
   uint32 :graphic_important_colors
-# palette[] created from 256 uint32's -- r g b a --- ACTUALLY, it's B G R A, thanks SE!
-# careful.. b g r a assumes 4x uint8's. uint32 would give arbg (i think?)
-# bitfields[] created from width*height (1024) bytes - read bytes one at a time?
-
-# then create png using palette[bitfields[i]] 
-# see below for manual work on this
+  ffxi_image :image
 end
 
 # rotate function, move to a different file for dealing w/ encryption
 class Integer
-  def rotate(n)
+  def ror(n)
     (self >> n | self << (8 - n) ) % 256
   end
-    def red()
+  def rol(n)
+    (self << n | self >> (8 - n) ) % 256
+  end
+    def blue()
       (self & 0xff000000) >> 24
     end
 
@@ -87,14 +86,13 @@ class Integer
       (self & 0x00ff0000) >> 16
     end
 
-    def blue()
+    def red()
       (self & 0x0000ff00) >> 8
     end
 
     def alpha()
       self & 0x000000ff
     end
-
 
     def semialpha()
       alpha = 255
@@ -104,7 +102,13 @@ class Integer
       end
       alpha
     end
-  
+
+    def unsemialpha()
+		alpha = self & 0x000000ff
+		semialpha = (alpha / 2.0).ceil
+		semialpha
+	end
+	
     def rgba_hash()
       {"red" => self.red, "green" => self.green, "blue" => self.blue, "alpha" => self.alpha, "semialpha" => self.semialpha}
     end
@@ -121,7 +125,7 @@ file = File.new("armor1.DAT","rb")
 a = []
 # go through all bytes and rotate right 5 bytes
 file.each_byte do |x|
-a << x.rotate(5)
+a << x.ror(5)
 end
 
 # number of items = array size / 0xc00 (length of an item)
@@ -147,14 +151,16 @@ puts armor[10]
 
 #convert this stuff to bindata format ;)
 
-palette = []
-remaining.each do |x|
-palette << x.rgba_hash
-end
+#extra stuff below temporary for my own benefit and debugging... 
 
 remaining = a[701...1725].pack("C*").unpack("N*")
 pixels = a[1725...1725+1024]
 out = ChunkyPNG::Image.new(32,32,ChunkyPNG::Color::TRANSPARENT)
+
+palette = []
+remaining.each do |x|
+palette << x.rgba_hash
+end
 
 
 pixels.each_with_index do |pixel,i|
@@ -170,7 +176,18 @@ out.to_data_url.gsub("data:image/png;base64,","")  #base64
 # ChunkyPNG::Image.from_data_url(out.to_data_url)
 # to load images
 
-
 out.palette #<-- sweet! 
 Array(out.palette).index(out.pixels[120]) #for re-building the binary...
+
+asdf = Armor.read(a[0...0xc00].pack("C*"))
+#do stuff to asdf
+x[0...0xc00] = asdf.to_binary_s.unpack("C*")
+(0xc00).times do |y|
+x[y] = x[y].rol(5)
+end
+
+out = File.open("109.DAT","w+b")
+out.write(x.pack("C*"))
+out.close
+
 
