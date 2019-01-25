@@ -10,7 +10,7 @@ file.each_byte do |x|
 end
 
 # read item into ffxi_armor
-item_no = 37
+item_no = 0
 item = FFXI_Armor.read(a[0xc00*(item_no)...0xc00*(item_no+1)].pack("C*"))
 
 # update description
