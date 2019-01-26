@@ -37,16 +37,18 @@ class FFXI_Item_Graphics < BinData::Record
 end
 
 class FFXI_Armor < BinData::Record
-    # header: 14
     endian :little
+    
     ffxi_item_header :header
-    # armor: 30
+    
     uint16 :level
     uint16 :slot
     uint16 :races
     ffxi_jobs :jobs
     uint16 :superior_lvl
+    
     uint16 :shield_size
+    
     uint8 :max_charges
     uint8 :casting_time
     uint16 :use_delay
@@ -54,8 +56,38 @@ class FFXI_Armor < BinData::Record
     uint16 :unknown2
     uint16 :ilevel
     uint32 :unknown3
-    # starting at 44
+    
     ffxi_item_string :strings
     ffxi_item_graphics :graphics
 end
 
+class FFXI_Weapon < BinData::Record
+    endian :little
+    
+    ffxi_item_header :header
+    
+    uint16 :level
+    uint16 :slot
+    uint16 :races
+    ffxi_jobs :jobs
+    uint16 :superior_lvl
+    
+    uint16 :unknown4
+    uint16 :damage
+    uint16 :delay
+    uint16 :dps
+    uint8 :skill
+    uint8 :jug_size
+    uint32 :unknown1
+
+    uint8 :max_charges
+    uint8 :casting_time
+    uint16 :use_delay
+    uint32 :reuse_delay
+    uint16 :unknown2
+    uint16 :ilevel
+    uint32 :unknown3
+    
+    ffxi_item_string :strings
+    ffxi_item_graphics :graphics
+end
