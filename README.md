@@ -8,6 +8,7 @@ To Do List:
 - Move Integer rotate() method - DONE
 - Rename to ror, create a rol - DONE
 - Need to create something to translate special characters (auto-trans brackets, element icons, probably more...)
+- - These are byte pairs starting with 0xEF - Try and see what all values there are? Might be more than just elements available?
 
 2. Possible additions to BinData
 
@@ -18,8 +19,8 @@ To Do List:
 - Need to finish researching DAT format to extract the graphic portion of items - DONE
 
 4. Refactor BinData::Records for reusability and DRYness, with other item types in mind
-- Header, Graphic portions should be reusable
-- Think of a way to simplify string section
+- Header, Graphic portions should be reusable - DONE
+- Think of a way to simplify string section - DONE...ish
 
 5. Save output in a useful & workable format
 - What would be the most useful way for end users to make modifications?
@@ -32,9 +33,9 @@ To Do List:
 
 7. Handle String Sizes
 - Two Options:
-  - Change all offsets to allow for larger names (should be more than enough space to fit the longest of descriptions) -- test and make sure client accepts this and doesn't break?
-  - Compare current string size (check :length on the strings) and see if the input fits, if not, adjust offsets to accomodate before assigning (would cause a mismatch between what gets written as an offset and what is being passed in, though... but in that case those wouldn't need to be maintained anyway, could probably not write them and just always calculate on the upload?)
-- Contemplate and come up with a solution
+  - Change all offsets to allow for larger names (should be more than enough space to fit the longest of descriptions) -- test and make sure client accepts this and doesn't break? - DID NOT DO THIS.
+  - Compare current string size (check :length on the strings) and see if the input fits, if not, adjust offsets to accomodate before assigning (would cause a mismatch between what gets written as an offset and what is being passed in, though... but in that case those wouldn't need to be maintained anyway, could probably not write them and just always calculate on the upload?) 
+  - - PARTIALLY DONE: Dynamically resizes string length up, need to make it also resize down
 
 8. Use FFXI directory to grab files, maybe just for initialization? Move to working directory?
 

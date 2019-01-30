@@ -58,6 +58,57 @@ module BinData
         bit1 :linkshell
     end
 
- 
+    class FFXI_Item_Slot < BinData::Record
+        #currently hardcoding slots... seems best way to do it?
+        SLOTS = {
+            "none" => 0x0000,
+            "main" => 0x0001,
+            "sub" => 0x0002,
+            "range" => 0x0004,
+            "ammo" => 0x0008,
+            "head" => 0x0010,
+            "body" => 0x0020,
+            "hands" => 0x0040,
+            "legs" => 0x0080,
+            "feet" => 0x0100,
+            "neck" => 0x0200,
+            "waist" => 0x0400,
+            "lear" => 0x0800,
+            "rear" => 0x1000,
+            "lring" => 0x2000,
+            "rring" => 0x4000,
+            "back" => 0x8000,
+            #sets
+            "ears" => 0x1800,
+            "rings" => 0x6000,
+            "all" => 0xFFFF
+        }
+        endian :little
+        uint16 :slot
 
+        def get_slot
+           SLOTS.key(slot)
+        end
+
+        def set_slot(_slot)
+            # Get hex value of provided slot (lowcased)
+            value = SLOTS[_slot.downcase]
+            if value.nil?
+                slot.assign 0x0000 # if value doesn't exist, return 0 (not equippable)
+                # should probably raise some kind of error? log error?
+            else
+                slot.assign value # otherwise, just return the value from the SLOTS hash
+            end
+        end
+    end
+
+    # To-do:
+    # Item Type
+    # Race
+    # Skill
+    # Valid Target/s
+    # Element (maybe? might be part of string element icon)
+
+    # When getting around to other portions (abilities): 
+    # AbilityType
 end

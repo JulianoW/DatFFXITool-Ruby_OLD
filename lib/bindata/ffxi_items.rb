@@ -42,7 +42,7 @@ class FFXI_Armor < BinData::Record
     ffxi_item_header :header
     
     uint16 :level
-    uint16 :slot
+    ffxi_item_slot :slot
     uint16 :races
     ffxi_jobs :jobs
     uint16 :superior_lvl
@@ -67,7 +67,7 @@ class FFXI_Weapon < BinData::Record
     ffxi_item_header :header
     
     uint16 :level
-    uint16 :slot
+    ffxi_item_slot :slot
     uint16 :races
     ffxi_jobs :jobs
     uint16 :superior_lvl
