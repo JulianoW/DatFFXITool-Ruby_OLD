@@ -9,6 +9,7 @@ To Do List:
 - Rename to ror, create a rol - DONE
 - Need to create something to translate special characters (auto-trans brackets, element icons, probably more...)
 - - These are byte pairs starting with 0xEF - Try and see what all values there are? Might be more than just elements available?
+- - Side-note, see SHIFT-JIS hex values here https://github.com/google/mozc/blob/master/src/data/unicode/SHIFTJIS.TXT for use in strings, format "\xF0\x0D"
 
 2. Possible additions to BinData
 

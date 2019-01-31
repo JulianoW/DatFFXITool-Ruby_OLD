@@ -91,3 +91,30 @@ class FFXI_Weapon < BinData::Record
     ffxi_item_string :strings
     ffxi_item_graphics :graphics
 end
+
+class FFXI_Usable_Item < BinData::Record
+    endian :little
+    
+    ffxi_item_header :header
+    
+    uint16 :activation_time
+    uint32 :unknown1
+    uint32 :unknown3
+    uint32 :unknown4
+    
+    ffxi_item_string :strings
+    ffxi_item_graphics :graphics
+end
+
+class FFXI_General_Item < BinData::Record
+    endian :little
+    
+    ffxi_item_header :header
+    
+    uint16 :unknown1
+    uint32 :unknown2
+    uint32 :unknown3
+    
+    ffxi_item_string :strings
+    ffxi_item_graphics :graphics
+end
