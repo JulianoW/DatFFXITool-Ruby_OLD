@@ -1,6 +1,15 @@
 # DatFFXITool
 FFXI Dat File Manager - Extract and Re-Package
 
+High level requirements: (These should equal "menu options" when running script)
+1. Grab and Stage .dat files from FFXI folder
+2. Initialize Database - create tables, triggers, etc. 
+    2.a. Trigger to set up a "row has been changed" column, or a "customized" column, to avoid overwrites from #4
+3. Initial Database Population - Run through all scripts, extract everything, save to empty database
+4. Update Database (not flagged) - Run through scripts (pick all or specific) and update the table where the "customized column" flag (from 2.a) is not set
+5. Create output .dat files - Pick all or specific
+6. Create DSP update statements - maybe...?
+
 To Do List:
 
 1. Create a separate file for Encryption/Decoding
