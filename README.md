@@ -1,4 +1,7 @@
 # DatFFXITool
+
+*** UPDATE: Deprecating repo. Rebuilding in C# with a user interface.
+
 FFXI Dat File Manager - Extract and Re-Package
 
 High level requirements: (These should equal "menu options" when running script)
